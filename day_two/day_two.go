@@ -46,9 +46,41 @@ func calculateCheckSum(values []string) int {
 	return seenTwoCount * seenThreeCount
 }
 
+func getSimilarCharactersInWordsWithOneDiff(values []string) string {
+	a, b := getOneCharDifferentStrings(values)
+	return getSimilarCharacters(a, b)
+}
+
+func getSimilarCharacters(a string, b string) (result string) {
+	for index := 0; index < len(a); index++ {
+		if a[index] != b[index] {
+			return a[0:index] + b[index+1:]
+		}
+	}
+	return
+}
+
+func getOneCharDifferentStrings(values []string) (resultOne string, resultTwo string) {
+	possibilities := make(map[string]string)
+	for _, val := range values {
+		for index := 0; index < len(val); index++ {
+			newString := val[0:index] + "_" + val[index+1:]
+			if result, ok := possibilities[newString]; ok {
+				return result, val
+			} else {
+				possibilities[newString] = val
+			}
+		}
+	}
+	return
+}
+
 func main() {
 	values := readFile("input.txt")
 
 	checkSum := calculateCheckSum(values)
 	fmt.Printf("\nCheck Sum: %d", checkSum)
+
+	similarCharacters := getSimilarCharactersInWordsWithOneDiff(values)
+	fmt.Printf("\nSimilar Characters: %v", similarCharacters)
 }
